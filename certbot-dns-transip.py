@@ -12,11 +12,16 @@ from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 
 
+HOST_PREFIX = '_acme-challenge'
+
+
 class TransipClient:
 
-    API_HOST = 'api.transip.nl'
-    AUTH_URL = '/v6/auth'
-    DNS_URL = '/v6/domains/%s/dns'
+    API_HOST = 'https://api.transip.nl'
+
+    AUTH_URL = API_HOST + '/v6/auth'
+    DNS_URL = API_HOST + '/v6/domains/%s/dns'
+
 
     """
     Simple REST-client for Transip, supporting authentication, creating and
@@ -154,7 +159,7 @@ if __name__ == '__main__':
     # Only supports domains with a single dot in it. :-)
     parts = args.domain.split('.')
     domain = '.'.join(parts[-2:])
-    name = '.'.join(parts[:-2])
+    name = "%s.%s" % (HOST_PREFIX, '.'.join(parts[:-2]))
 
     t = TransipClient(username=args.username, keyfile=args.private_keyfile,
                       token=args.bearer_token)

@@ -11,7 +11,7 @@ Example usage:
 
 auth-transip.sh
 ```
-certbot-dns-transip.sh \
+certbot-dns-transip.py \
     create $CERTBOT_DOMAIN \
     --username=<my username> \
     --private_keyfile=<private.key> \
@@ -21,7 +21,7 @@ certbot-dns-transip.sh \
 cleanup-transip.sh
 ```
 TOKEN=$(echo $CERTBOT_AUTH_OUTPUT | awk '/JWT:/{print $2}')
-certbot-dns-transip.sh \
+certbot-dns-transip.py \
     cleanup $CERTBOT_DOMAIN \
     --bearer_token="$TOKEN"
 ```
