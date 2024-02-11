@@ -2,7 +2,7 @@
 
 This is a simple python script to help creating and cleaning up a TXT
 record for validating a domain using DNS-01 using certbot. It can be
-used for `--manual-auth-hook` and --manual-cleanup-hook`.
+used for `--manual-auth-hook` and `--manual-cleanup-hook`.
 
 It is designed to not have any dependencies, it should work with any recent version
 of python3.
