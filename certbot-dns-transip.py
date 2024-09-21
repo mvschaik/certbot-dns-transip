@@ -14,7 +14,6 @@ import time
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 
-
 HOST_PREFIX = '_acme-challenge'
 TIMEOUT_S = 60
 
@@ -22,6 +21,8 @@ TIMEOUT_S = 60
 def find_root_authority(domain):
     """
     Finds the root authority/NS and root domain for a domain name.
+
+    For example, for www3.example.co.uk it would return (ns0.transip.net., example.co.uk).
 
     It keeps removing prefixes and makes SOA requests until there's a hit.
     """
@@ -193,10 +194,15 @@ if __name__ == '__main__':
         logging.error("Provide --validation to create record")
         sys.exit(1)
 
+    # for hostname.example.co.uk:
+    # ns = ns0.transip.net.
+    # name = _acme-challenge.hostname
+    # domain = example.co.uk
     ns, domain = find_root_authority(args.domain)
-    name = "%s.%s" % (HOST_PREFIX, domain)
+    host = args.domain[:-len(domain) - 1]
+    name = f'{HOST_PREFIX}.{host}'
     if not ns.endswith('transip.net.'):
-        logging.error('Domain is not registered with TransIP')
+        logging.error('Domain is not hosted at TransIP')
         sys.exit(1)
 
     t = TransipClient(username=args.username, keyfile=args.private_keyfile,
@@ -205,11 +211,13 @@ if __name__ == '__main__':
         t.ensure_txt_record(domain, name, args.validation)
         # Wait until record is updated.
         start_time = time.monotonic()
-        while start_time + TIMEOUT_S < time.monotonic():
-            if dig(name, 'TXT', ns) == args.validation:
+        while start_time + TIMEOUT_S > time.monotonic():
+            if dig(f'{name}.{domain}', 'TXT', ns) == args.validation:
                 sys.exit(0)
             logging.info('Waiting for TXT record to update...')
             time.sleep(5)
+        logging.error("Timeout waiting for DNS record")
+        sys.exit(1)
 
     elif args.command == 'cleanup':
         t.remove_txt_record(domain, name)
