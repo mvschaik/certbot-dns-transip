@@ -82,8 +82,6 @@ class TransipClient:
     def _get_auth_headers(self):
         if self._token is None:
             self._token = self._get_token()
-            # Print JWT token to stdout so it can be captured for later use.
-            print("JWT: %s" % self._token)
         return {
             'Authorization': 'Bearer %s' % self._token
         }
