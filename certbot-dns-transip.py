@@ -166,6 +166,7 @@ class TransipClient:
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG,
+                        stream=sys.stdout,
                         format='%(levelname)s:%(message)s')
 
     parser = argparse.ArgumentParser(
