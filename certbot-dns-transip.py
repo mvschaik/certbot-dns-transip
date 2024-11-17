@@ -212,6 +212,7 @@ if __name__ == '__main__':
         start_time = time.monotonic()
         while start_time + TIMEOUT_S > time.monotonic():
             if dig(f'{name}.{domain}', 'TXT', ns) == args.validation:
+                logging.info('Found TXT record: done!')
                 sys.exit(0)
             logging.info('Waiting for TXT record to update...')
             time.sleep(5)
