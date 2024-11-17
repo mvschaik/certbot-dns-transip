@@ -7,9 +7,12 @@ used for `--manual-auth-hook` and `--manual-cleanup-hook`.
 It is designed to not have any dependencies, it should work with any recent version
 of python3.
 
+Tested mostly on MacOS but I'd expect it to run on most *nixes that have `dig` and `openssl` installed.
+
 Example usage:
 
 auth-transip.sh
+
 ```
 certbot-dns-transip.py \
     create $CERTBOT_DOMAIN \
@@ -19,14 +22,16 @@ certbot-dns-transip.py \
 ```
 
 cleanup-transip.sh
+
 ```
-TOKEN=$(echo $CERTBOT_AUTH_OUTPUT | awk '/JWT:/{print $2}')
 certbot-dns-transip.py \
     cleanup $CERTBOT_DOMAIN \
-    --bearer_token="$TOKEN"
+    --username=<my username> \
+    --private_keyfile=<private.key>
 ```
 
 Certbot command
+
 ```
 certbot certonly --manual --preferred_challenges=dns \
     --manual-auth-hook=auth-transip.sh \
